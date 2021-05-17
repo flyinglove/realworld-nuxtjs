@@ -12,18 +12,22 @@
         </p>
 
         <ul class="error-messages">
-          <li>That email is already taken</li>
+            <template v-for="(messages, field) in errors">
+                <li v-for="(message, index) in messages" :key="index">
+                    {{field}} {{message}}
+                </li>
+            </template>
         </ul>
 
-        <form>
+        <form @submit.prevent='onSubmit'>
           <fieldset v-if="!isLogin" class="form-group">
-            <input class="form-control form-control-lg" type="text" placeholder="Your Name">
+            <input class="form-control form-control-lg" v-model="user.username" type="text" placeholder="Your Name" required>
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="text" placeholder="Email">
+            <input class="form-control form-control-lg" v-model='user.email' type="email" placeholder="Email" required>
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="password" placeholder="Password">
+            <input class="form-control form-control-lg" v-model='user.password' type="password" placeholder="Password" required>
           </fieldset>
           <button class="btn btn-lg btn-primary pull-xs-right">
             {{ isLogin ? 'Sign in' : 'Sign up' }}
@@ -37,8 +41,38 @@
 </template>
 
 <script>
+const Cookie = process.client ? require('js-cookie') : undefined
+import {login, register} from '@/api/user'
+// import { mapMutations } from 'vuex'
 export default {
     name: 'login',
+    middleware: 'unauth',
+    data() {
+        return {
+            user: {
+                username: '',
+                email: '',
+                password: ''
+            },
+            errors: {}
+        }
+    },
+    methods: {
+        async onSubmit() {
+            try {
+                const { data } =this.isLogin ? await login({
+                    user: this.user
+                }) : await register({
+                    user: this.user
+                })
+                this.$store.commit('setUser', data.user)
+                Cookie.set('user', data.user)
+                this.$router.push('/')
+            } catch(err) {
+                this.errors = err.response.data.errors
+            }
+        }
+    },
     computed: {
         isLogin() {
             return this.$route.name === 'login'
