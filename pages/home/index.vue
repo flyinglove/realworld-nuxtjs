@@ -66,7 +66,8 @@
                     <nuxt-link class="page-link" :to="{
                         name: 'home',
                         query: {
-                            page: item
+                            page: item,
+                            tag: $route.query.tag
                         }
                     }">{{item}}</nuxt-link>
                 </li>
@@ -80,14 +81,12 @@
           <p>Popular Tags</p>
 
           <div class="tag-list">
-            <a href="" class="tag-pill tag-default">programming</a>
-            <a href="" class="tag-pill tag-default">javascript</a>
-            <a href="" class="tag-pill tag-default">emberjs</a>
-            <a href="" class="tag-pill tag-default">angularjs</a>
-            <a href="" class="tag-pill tag-default">react</a>
-            <a href="" class="tag-pill tag-default">mean</a>
-            <a href="" class="tag-pill tag-default">node</a>
-            <a href="" class="tag-pill tag-default">rails</a>
+            <nuxt-link :to="{
+                name: 'home',
+                query: {
+                    tag: item
+                }
+            }" class="tag-pill tag-default" v-for="(item, index) in tags" :key="index">{{item}}</nuxt-link>
           </div>
         </div>
       </div>
@@ -100,23 +99,29 @@
 
 <script>
 import { getArticles } from '@/api/article'
+import { getTags } from '@/api/tag'
+
 export default {
     name: 'HomeIndex',
-    watchQuery: ['page'],
+    watchQuery: ['page', 'tag'],
     async asyncData({query}) {
         const page = Number.parseInt(query.page || 1)
         const limit = 20
-        const { data } = await getArticles({
+        const [data, tagData] = await Promise.all([getArticles({
             limit,
-            offset: (page - 1) * limit
-        })
-        const totalPage = Math.ceil(data.articlesCount / limit)
+            offset: (page - 1) * limit,
+            tag: query.tag
+        }), getTags()])
+        const {articles, articlesCount} = data.data
+        const {tags} = tagData.data
+        const totalPage = Math.ceil(articlesCount / limit)
         return {
-            articles: data.articles,
-            articleCount: data.articlesCount,
+            articles: articles,
+            articleCount: articlesCount,
             page,
             limit,
-            totalPage
+            totalPage,
+            tags
         }
     }
 }
