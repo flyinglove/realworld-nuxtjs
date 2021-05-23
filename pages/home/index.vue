@@ -73,11 +73,12 @@
                     username: article.author.username
                 }
             }" class="author">{{article.author.username}}</nuxt-link>
-              <span class="date">{{article.createdAt}}</span>
+              <span class="date">{{article.createdAt |
+                 date('MMM DD, YYYY')}}</span>
             </div>
             <button class="btn btn-outline-primary btn-sm pull-xs-right" :class="{
                 active: article.favorited
-            }">
+            }" @click="onFavorite(article)" :disabled="article.favoriteDisabled">
               <i class="ion-heart"></i> {{article.favoritesCount}}
             </button>
           </div>
@@ -133,7 +134,7 @@
 </template>
 
 <script>
-import { getArticles, getFeedArticles } from '@/api/article'
+import { getArticles, getFeedArticles, addFavorite, deleteFavorite } from '@/api/article'
 import { getTags } from '@/api/tag'
 import { mapState } from 'vuex'
 
@@ -151,6 +152,9 @@ export default {
             tag: tag
         }), getTags()])
         const {articles, articlesCount} = data.data
+        articles.forEach(item => {
+          item.favoriteDisabled = false
+        })
         const {tags} = tagData.data
         const totalPage = Math.ceil(articlesCount / limit)
         return {
@@ -166,6 +170,21 @@ export default {
     },
     computed: {
         ...mapState(['user'])
+    },
+    methods: {
+      async onFavorite(article) {
+        article.favoriteDisabled = true
+        if (article.favorited) {
+          await deleteFavorite(article.slug)
+          article.favorited = false
+          article.favoritesCount --
+        } else {
+          await addFavorite(article.slug)
+          article.favorited = true
+          article.favoritesCount ++
+        }
+        article.favoriteDisabled = false
+      }
     }
 }
 </script>
