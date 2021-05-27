@@ -16,6 +16,7 @@ jobs:
     # 打包构建
     - name: Build
       uses: actions/setup-node@master
+    - run: npm global install yarn
     - run: yarn
     - run: yarn build
     - run: tar -zcvf release.tgz .nuxt static nuxt.config.js package.json yarn.lock pm2.config.json
