@@ -54,6 +54,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /root/realworld-nuxtjs
+          echo $PATH
           wget https://github.com/flyinglove/realworld-nuxtjs/releases/latest/download/release.tgz -O release.tgz
           tar zxvf release.tgz
           npm install --production
