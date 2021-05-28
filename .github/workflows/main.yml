@@ -54,7 +54,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          source ~/bash_profile
+          source ~/.bash_profile
           echo $PATH
           cd /root/realworld-nuxtjs
           wget https://github.com/flyinglove/realworld-nuxtjs/releases/latest/download/release.tgz -O release.tgz
