@@ -55,8 +55,8 @@
             </li>
           </ul>
         </div>
-
-        <div class="article-preview" v-for="article in articles" :key="article.slug">
+        <template v-if="articles.length">
+          <div class="article-preview" v-for="article in articles" :key="article.slug">
           <div class="article-meta">
             <!-- <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" /></a> -->
             <nuxt-link :to="{
@@ -93,6 +93,11 @@
             <span>Read more...</span>
           </nuxt-link>
         </div>
+        </template>
+        <div class="article-preview" v-else>
+          啥也没有呀
+        </div>
+        
         <nav>
             <ul class="pagination">
 

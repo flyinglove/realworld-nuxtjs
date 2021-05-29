@@ -5,7 +5,7 @@
     <div class="container">
 
       <h1>{{article.title}}</h1>
-      <article-meta :article="article"></article-meta>
+      <article-meta :article="article" @update-author="updateAuthor" @update-article="updateArticle"></article-meta>
     </div>
   </div>
 
@@ -19,7 +19,7 @@
     <hr />
 
     <div class="article-actions">
-      <article-meta :article="article"></article-meta>
+      <article-meta :article="article" @update-author="updateAuthor" @update-article="updateArticle"></article-meta>
     </div>
 
     <div class="row">
@@ -67,7 +67,16 @@ export default {
               content: this.article.description
             }]
         }
+      },
+    methods: {
+      updateAuthor(author) {
+        this.article.author = author
+      },
+      updateArticle(article) {
+        console.log(article, article.favorited)
+        this.article = article
       }
+    }
 }
 </script>
 
