@@ -40,7 +40,8 @@ module.exports = {
     },
     plugins: [
         '~/plugins/request.js',
-        '~/plugins/dayjs.js'
+        '~/plugins/dayjs.js',
+        '~/plugins/logrocket.js'
     ],
     server: {
         host: '0.0.0.0',

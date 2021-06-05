@@ -62,9 +62,6 @@ export default {
         }
     },
     computed: {
-        currentUser() {
-            return this.user.username === this.article.author.username
-        },
         ...mapState(['user'])
     },
     async mounted() {

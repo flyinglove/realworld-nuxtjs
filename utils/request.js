@@ -6,6 +6,7 @@ const request = axios.create({
 
 
 request.interceptors.request.use(function(config) {
+    config.headers.Authorization = `Token `
     return config
 }, function(error) {
     return Promise.reject(error)
